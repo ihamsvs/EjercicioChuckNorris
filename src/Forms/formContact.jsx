@@ -1,40 +1,30 @@
-import React, {useState} from 'react';
-import { Contacto } from '../models/models.contact';
-const FormContact = () => {
+import React, { useRef } from 'react';
 
-    const Contact1 = new Contacto('Juana', 'Maria', false)
-    const Contact2 = new Contacto('Pia', 'Cuevas', true)
+const ContactForm = ({ onAddContact }) => {
+  const name = useRef('');
+  const email = useRef('');
 
-    const [contacs, setContacs] = useState(Contact1, Contact2);
+  function addContact(e) {
+    e.preventDefault();
 
-    function addTask(Contacto){
-        console.log('Delete this Task: ', Contacto)
-        const index = contacs.indexOf(Contacto)
-        const tempTasks = [...contacs]
-        tempTasks.push(contacs)
-        setContacs(tempTasks)
-    }
+    const newContact = { nombre: name.current.value, email: email.current.value, conectado: true };
 
-    return (
-        <div>
-            <div>
-                <h2>Contacto</h2>
-                <p>{Contact1.nombre}</p>
-                <p>{Contact1.apellido}</p>
-                <p>{Contact1.conectado ? 'Conectado' : 'desconectado'}</p>
-            </div>
-            <div>
-                <p>{Contact2.nombre}</p>
-                <p>{Contact2.apellido}</p>
-                <p>{Contact2.conectado ? 'Conectado' : 'desconectado'}</p>
-                
-            </div>
+    onAddContact(newContact);
+    name.current.value = '';
+    email.current.value = '';
+  }
 
-            <button>Crear contacto</button>
-            <button>Eliminar Contacto</button>
-            <button>Mostrar Contacto</button>
-        </div>
-    );
-}
+  return (
+    <form onSubmit={addContact} className="contact-component">
+      <h2>Añadir Contacto: </h2>
+      <input ref={name} name="name" placeholder="Nombre contacto" className="form-control mb-2" />
+      <input ref={email} name="email" type="email" placeholder="Email contacto" />
+      <button onClick={addContact} type="submit" className="submit-button">
+        Añadir
+      </button>
+    </form>
+  );
+};
 
-export default FormContact;
+export default ContactForm;
+
