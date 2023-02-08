@@ -1,51 +1,59 @@
-import React, { useState, useEffect } from 'react';
-import ContactComponent from './Forms/contactForm';
-import ContactForm from './Forms/formContact';
+import { useState } from 'react';
 import './App.css';
-const App = () => {
-  const defaultContact = [
-    { nombre: 'Jose', email: 'Fernandez', conectado: true },
-    { nombre: 'Maria', email: 'Gómez', conectado: true },
-  ];
 
-  const [nuevoContacto, setNuevoContacto] = useState(defaultContact);
+function App() {
+  const [color, setColor] = useState('#000000');
 
-  function changeState(contacto) {
-    const index = nuevoContacto.indexOf(contacto);
-    const tempContact = [...nuevoContacto];
+  const [manageInterval, setManageInterval] = useState(0);
+  const [doubleClick, setDoubleClick] = useState(0);
 
-    tempContact[index].estado = !tempContact[index].estado;
-    setNuevoContacto(tempContact);
-  }
+  const getColor = () => Math.floor(Math.random() * 256);
 
-  function remove(contacto) {
-    const index = nuevoContacto.indexOf(contacto);
-    const tempContact = [...nuevoContacto];
-    tempContact.splice(index, 1);
-    setNuevoContacto(tempContact);
-  }
+  const getHex = (red, green, blue) => {
+    return (
+      '#' +
+      [red, green, blue]
+        .map((c) => {
+          const hex = c.toString(16);
+          return hex.lenght === 1 ? '0' + hex : hex;
+        })
+        .join('')
+    );
+  };
 
-  function addContact(contacto) {
-    const tempContact = [...nuevoContacto];
-    tempContact.push(contacto);
-    setNuevoContacto(tempContact);
-  }
+  const generateHex = () => {
+    const rgb = {
+      r: getColor(),
+      g: getColor(),
+      b: getColor(),
+    };
+    return setColor(getHex(rgb.r, rgb.g, rgb.b));
+  };
+
+  const onChangeColor = () => {
+    return setManageInterval(setInterval(generateHex, 500));
+  };
+
+  const onStopChangeColor = () => {
+    return clearInterval(manageInterval);
+  };
+
+  const onClickChangeColor = () => {
+    return clearInterval(manageInterval);
+  };
 
   return (
-    <div className="App">
-      <h1>Contactos</h1>
-
-      <div className="card-container">
-        {nuevoContacto.map((contacto, index) => {
-          return (
-            <ContactComponent key={index} contacto={contacto} changeState={changeState} remove={remove} />
-          );
-        })}
-      </div>
-
-      <ContactForm onAddContact={addContact}></ContactForm>
+    <div className="App" style={{ margin: 'auto' }}>
+      <div
+        id="square"
+        onMouseOver={onChangeColor}
+        onMouseLeave={onStopChangeColor}
+        onDoubleClick={onClickChangeColor}
+        style={{ width: '255px', height: '255px', backgroundColor: color, margin: 'auto' }}
+      ></div>{' '}
+      <p style={{ color: 'black' }}>Color: {color} </p>
     </div>
   );
-};
+}
 
 export default App;
